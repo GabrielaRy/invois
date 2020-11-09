@@ -39,5 +39,26 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+		'is_admin' => 'boolean'
     ];
+
+	/**
+	 * One user has many invoices
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function invoices()
+	{
+		return $this->hasMany(Invoice::class);
+    }
+
+	/**
+	 * One user has many customers
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function customers()
+	{
+		return $this->hasMany(Customer::class);
+    }
 }
