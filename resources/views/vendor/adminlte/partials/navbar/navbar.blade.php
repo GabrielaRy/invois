@@ -36,7 +36,11 @@
             @include('adminlte::partials.navbar.menu-item-right-sidebar-toggler')
         @endif
 		@if(Auth::user()->isAdmin())
-			<a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Administrátosrká sekce</a>
+			@if(Request::is('app/*'))
+				<a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Administrátosrká sekce</a>
+			@elseif(Request::is('admin/*'))
+				<a href="{{ route('app.dashboard') }}" class="btn btn-primary">Uživatelská sekce</a>
+			@endif
 		@endif
     </ul>
 
