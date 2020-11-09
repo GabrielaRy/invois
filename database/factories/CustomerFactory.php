@@ -22,6 +22,7 @@ class CustomerFactory extends Factory
     public function definition()
     {
         $identificationNumber = $this->faker->randomNumber(9);
+		$paymentTime = $this->faker->numberBetween(1, 30);
 
         return [
             'user_id' => 1,
@@ -36,7 +37,7 @@ class CustomerFactory extends Factory
             'contact_person_phone' => $this->faker->phoneNumber,
             'contact_person_email' => $this->faker->email,
             'note' => $this->faker->sentence,
-            'invoice_due_date' => 14
+            'due_date' => $paymentTime
         ];
     }
 }
