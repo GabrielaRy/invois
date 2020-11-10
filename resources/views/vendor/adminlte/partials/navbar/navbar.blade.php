@@ -37,7 +37,7 @@
         @endif
 		@if(Auth::user()->isAdmin())
 			@if(Request::is('app/*'))
-				<a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Administrátosrká sekce</a>
+				<a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Admin sekce</a>
 			@elseif(Request::is('admin/*'))
 				<a href="{{ route('app.dashboard') }}" class="btn btn-primary">Uživatelská sekce</a>
 			@endif
