@@ -27,7 +27,7 @@ class CreateCustomersTable extends Migration
             $table->string('contact_person_phone', 50)->nullable();
             $table->string('contact_person_email', 255)->nullable();
             $table->text('note')->nullable();
-            $table->dateTime('invoice_due_date')->nullable();
+			$table->smallInteger('due_date')->nullable()->unsigned();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -61,6 +61,16 @@ class User extends Authenticatable implements MustVerifyEmail
 		return $this->hasMany(Customer::class);
     }
 
+	/**
+	 * User has one Invoice setting
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function invoiceSetting()
+	{
+		return $this->hasOne(InvoiceSetting::class);
+    }
+
 	public function isAdmin()
 	{
 		return $this->is_admin;
