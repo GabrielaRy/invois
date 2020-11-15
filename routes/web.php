@@ -37,3 +37,7 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
 
 	});
 });
+
+Route::resource('app/customers', CustomerController::class)->except(['edit', 'update']);
+Route::get('app/customer/{id}/edit', 'CustomerController@edit')->name('customers.edit');
+Route::put('/customer/{id}', 'CustomerController@update');
