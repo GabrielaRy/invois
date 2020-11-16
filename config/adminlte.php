@@ -259,6 +259,7 @@ return [
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
         ],
+
         [
             'text'    => 'multilevel',
             'icon'    => 'fas fa-fw fa-share',
@@ -297,6 +298,14 @@ return [
                 ],
             ],
         ],
+
+        ['header' => 'Kontakty'],
+
+        [
+            'text' => 'Zákazníci',
+            'url'  => 'app/customers',
+        ],
+
         ['header' => 'labels'],
         [
             'text'       => 'important',

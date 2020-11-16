@@ -21,6 +21,8 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
 	Route::prefix('/app')->group(function () {
 
+	Route::resource('/customers', CustomerController::class);
+
 		Route::get('/dashboard', function () {
 			return view('app.dashboard');
 		})->name('app.dashboard');
@@ -37,3 +39,5 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
 
 	});
 });
+
+
