@@ -4,7 +4,11 @@
 	<h1>{{ $customer->name }}</h1>
 @endsection
 
-
+@if (session('success'))
+     <div class="alert alert-success">
+          {{ session('success') }}
+     </div>
+@endif
 
 @section('content')
 

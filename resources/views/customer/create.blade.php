@@ -18,7 +18,6 @@
 
 <form action="{{ action('CustomerController@store') }}" method="POST">
     @csrf
-<input type="hidden" name="userId" value="{{ auth()->user()->id }}">
 
     <h5>Identifikace</h5>
     <div class="form-row">

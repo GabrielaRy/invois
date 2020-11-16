@@ -4,7 +4,11 @@
 	<h1>Seznam Zákazníků</h1>
 @endsection
 
-
+@if (session('success'))
+     <div class="alert alert-success">
+          {{ session('success') }}
+     </div>
+@endif
 
 @section('content')
 
@@ -12,6 +16,12 @@
 <br>
 <br>
 
+@if($customers->isEmpty()) 
+
+<div>Seznam je prázdný. Začněte vytvořením nového zákazníka.</div>
+  
+@else
+  
 <div class="row">
     <div class="col-12">
       <div class="card">
@@ -58,4 +68,5 @@
       <!-- /.card -->
     </div>
   </div>
+@endif
 @endsection

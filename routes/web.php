@@ -21,6 +21,10 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
 	Route::prefix('/app')->group(function () {
 
+	Route::resource('/customers', CustomerController::class)->except(['edit', 'update']);
+	Route::get('/customer/{id}/edit', 'CustomerController@edit')->name('customers.edit');
+	Route::put('/customer/{id}', 'CustomerController@update');
+
 		Route::get('/dashboard', function () {
 			return view('app.dashboard');
 		})->name('app.dashboard');
@@ -38,6 +42,4 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
 	});
 });
 
-Route::resource('app/customers', CustomerController::class)->except(['edit', 'update']);
-Route::get('app/customer/{id}/edit', 'CustomerController@edit')->name('customers.edit');
-Route::put('/customer/{id}', 'CustomerController@update');
+
