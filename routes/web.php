@@ -21,9 +21,7 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
 	Route::prefix('/app')->group(function () {
 
-	Route::resource('/customers', CustomerController::class)->except(['edit', 'update']);
-	Route::get('/customer/{id}/edit', 'CustomerController@edit')->name('customers.edit');
-	Route::put('/customer/{id}', 'CustomerController@update');
+	Route::resource('/customers', CustomerController::class);
 
 		Route::get('/dashboard', function () {
 			return view('app.dashboard');

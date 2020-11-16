@@ -33,10 +33,10 @@ class CustomerController extends Controller
 
     public function update(Request $request, $id) {
 
-        $validator = Validator:: make($request->all(),[
+        $request->validate([
             'name' => 'required',
             'identificationNumber'  => 'required|min:8',
-            'taxIdentificationNumber'  => 'min:10',
+            'taxIdentificationNumber'  => 'nullable|string',
             'street'  => 'required|string',
             'city'  => 'required|string',
             'postcode'  => 'required|string',
@@ -48,12 +48,6 @@ class CustomerController extends Controller
             'invoiceDueDate' => 'nullable|string'
 
         ]);
-
-        if ($validator->fails()) {
-            return redirect('app/customers/create')
-                        ->withErrors($validator)
-                        ->withInput();
-        }
 
         $customer = Customer::findOrFail($id);
 
@@ -82,10 +76,10 @@ class CustomerController extends Controller
 
     public function store(Request $request) {
 
-        $validator = Validator:: make($request->all(),[
+        $request->validate([
             'name' => 'required',
             'identificationNumber'  => 'required|min:8',
-            'taxIdentificationNumber'  => 'min:10',
+            'taxIdentificationNumber'  => 'nullable|string',
             'street'  => 'required|string',
             'city'  => 'required|string',
             'postcode'  => 'required|string',
@@ -98,12 +92,6 @@ class CustomerController extends Controller
 
         ]);
         
-        if ($validator->fails()) {
-            return redirect('app/customers/create')
-                        ->withErrors($validator)
-                        ->withInput();
-        }
-
         $userId =  auth()->user()->id;
 
         $customer = new Customer;
