@@ -44,7 +44,9 @@ class CreateInvoicesTable extends Migration
 			$table->string('payment_type', 50);
 
 			$table->date('issue_date');
-			$table->date('due_date');
+            $table->date('due_date');
+
+            $table->datetime('is_paid')->nullable();
 
 			$table->text('note')->nullable();
 
