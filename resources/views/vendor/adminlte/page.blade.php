@@ -40,7 +40,7 @@
                 <div class="{{ config('adminlte.classes_content_header') ?: $def_container_class }}">
 					@if(Auth::user()->email_verified_at === null)
 					<div class="alert alert-warning" role="alert">
-						Potvrďte prosím svou emailovou adresu simonmarekpersonal@gmail.com, na kterou byl odeslán aktivační odkaz.
+						Potvrďte prosím svou emailovou adresu {{ Auth::user()->email }}, na kterou byl odeslán aktivační odkaz.
 					</div>
 					@endif
 					@if(Request::get('verified') == 1)
