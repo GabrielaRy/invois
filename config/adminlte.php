@@ -306,6 +306,11 @@ return [
             'url'  => 'app/customers',
         ],
 
+        [
+            'text' => 'Fakturační údaje',
+            'url'  => '/app/user',
+        ],
+
         ['header' => 'labels'],
         [
             'text'       => 'important',
