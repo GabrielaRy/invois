@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+
 
 class CustomerController extends Controller
 {
@@ -14,7 +14,7 @@ class CustomerController extends Controller
 
         $customers = Customer::where('user_id', $userId)->get();
 
-        return view('customer/index', compact('customers'));
+        return view('app/customer/index', compact('customers'));
         
     }
 
@@ -22,13 +22,13 @@ class CustomerController extends Controller
 
         $customer = Customer::findOrFail($id);
 
-        return view('customer/show', compact('customer'));
+        return view('app/customer/show', compact('customer'));
     }
 
     public function edit($id) {
         $customer = Customer::findOrFail($id);
 
-        return view('customer/edit', compact('customer'));
+        return view('app/customer/edit', compact('customer'));
     }
 
     public function update(Request $request, $id) {
@@ -71,7 +71,7 @@ class CustomerController extends Controller
 
     public function create() {
         
-        return view ('customer/create');
+        return view ('app/customer/create');
     }
 
     public function store(Request $request) {

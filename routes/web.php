@@ -22,6 +22,8 @@ Route::middleware(['auth'])->group(function () {
 	Route::prefix('/app')->group(function () {
 
 	Route::resource('/customers', CustomerController::class);
+	Route::get('user', [App\Http\Controllers\UserController::class, 'edit'])->name('user.edit');
+	Route::patch('user', [App\Http\Controllers\UserController::class, 'update'])->name('user.update');
 
 		Route::get('/dashboard', function () {
 			return view('app.dashboard');
