@@ -303,6 +303,14 @@ return [
                 ],
             ],
         ],
+
+        ['header' => 'Kontakty'],
+
+        [
+            'text' => 'Zákazníci',
+            'url'  => 'app/customers',
+        ],
+
         ['header' => 'labels'],
         [
             'text'       => 'important',
