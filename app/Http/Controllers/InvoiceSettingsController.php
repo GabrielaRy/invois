@@ -54,7 +54,7 @@ class InvoiceSettingsController extends Controller
 
         $invoiceSetting->save();
 
-        return redirect()->route('app.invoiceSettings.edit');
+        return redirect()->route('app.invoiceSettings.edit')->with('success', 'Nastavení faktur bylo úspěšně změněno');
 }
 
 }
