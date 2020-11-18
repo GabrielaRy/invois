@@ -259,7 +259,12 @@ return [
             'url'  => 'admin/settings',
             'icon' => 'fas fa-fw fa-lock',
         ],
+        ['header' => 'Nastavení'],
 
+        [
+            'text' => 'Nastavení faktur',
+            'url'  => 'app/invoicesettings',
+        ],
         [
             'text'    => 'multilevel',
             'icon'    => 'fas fa-fw fa-share',

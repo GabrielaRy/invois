@@ -26,6 +26,8 @@ Route::middleware(['auth'])->group(function () {
 		Route::get('/dashboard', function () {
 			return view('app.dashboard');
 		})->name('app.dashboard');
+		Route::get('invoicesettings', [App\Http\Controllers\InvoiceSettingsController::class, 'edit'])->name('app.invoiceSettings.edit');
+		Route::patch('invoicesettings', [App\Http\Controllers\InvoiceSettingsController::class, 'update'])->name('app.invoiceSettings.update');
 
 	});
 });
@@ -39,5 +41,3 @@ Route::middleware(['auth', 'can:admin'])->group(function () {
 
 	});
 });
-
-
