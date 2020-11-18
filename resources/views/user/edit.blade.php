@@ -18,7 +18,7 @@
 
 <form action="{{ action('UserController@update')}}" method="POST">
     @csrf
-    @method('post')
+    @method('patch')
 
     <h5>Identifikace</h5>
     <div class="form-row">

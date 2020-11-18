@@ -8,7 +8,7 @@
 
 <form action="{{ action('CustomerController@update', $customer->id) }}" method="POST">
     @csrf
-    @method('put')
+    @method('patch')
 
 
     <h5>Identifikace</h5>

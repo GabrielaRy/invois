@@ -23,7 +23,7 @@ Route::middleware(['auth'])->group(function () {
 
 	Route::resource('/customers', CustomerController::class);
 	Route::get('user', [App\Http\Controllers\UserController::class, 'edit'])->name('user.edit');
-	Route::post('user', [App\Http\Controllers\UserController::class, 'update'])->name('user.update');
+	Route::patch('user', [App\Http\Controllers\UserController::class, 'update'])->name('user.update');
 
 		Route::get('/dashboard', function () {
 			return view('app.dashboard');
