@@ -45,7 +45,6 @@ class InvoiceSettingsController extends Controller
 
         $invoiceSetting = new InvoiceSetting;
 
-        $invoiceSetting->id = $request->input('id');
         $invoiceSetting->user_id = $userId;
         $invoiceSetting->logo = $request->input('logo');
         $invoiceSetting->signature = $request->input('signature');
