@@ -27,7 +27,11 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('admin', function ($user) {
-        	return Auth::user()->isAdmin() === true;
+        	return $user->isAdmin() === true;
+		});
+
+        Gate::define('manage-own-invoices', function ($user, $invoice) {
+        	return (int) $user->id === (int) $invoice->user_id;
 		});
     }
 }

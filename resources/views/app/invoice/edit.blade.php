@@ -21,7 +21,7 @@
         <!-- vyresi cislo faktury -->
         <div class="form-group col-md-6">
          <label for="bank_account_number">Číslo faktury</label>
-        <input type="text" class="form-control" id="invoice_no" name="invoiceNo" value="{{ $invoice->invoice_no }}">
+        <input type="text" class="form-control" id="invoice_number" name="invoiceNumber" value="{{ $invoice->invoice_number }}">
        </div>
          <!-- info row -->
          <div class="row invoice-info">
@@ -39,12 +39,12 @@
                  <label for="contractor_country"></label>
                  <input type="text" class="form-control" id="contractor_country" name="contractorCountry" value= "{{ $invoice->contractor_country }}">
              </address>
- 
+
              <label for="contractor_identification_number">IČO: </label>
              <input type="text" class="form-control" id="contractor_identification_number" name="contractorIdentificationNumber" value= "{{ $invoice->contractor_identification_number }}">
              <label for="contractor_city">DIČ: </label>
              <input type="text" class="form-control" id="contractor_tax_identification_number" name="contractorTaxIdentificationNumber" value= "{{ $invoice->contractor_tax_identification_number }}">
-             
+
            </div>
            <!-- /.col -->
            <div class="col-sm-6 invoice-col">
@@ -84,23 +84,21 @@
                <label for="bank_account_swift">SWIFT</label>
                <input type="text" class="form-control" id="bank_account_swift" name="bankAccountSwift" placeholder="volitelné" value="{{ $invoice->bank_account_swift }}">
            </div>
-         </div>     
+         </div>
        </div>
-   
+
        <div class="col-sm-6 invoice-col">
-         <label for="contractor_city">Datum vystavení: </label>
-         <input type="date" class="form-control" id="issue_date" name="issueDate" value="{{ $invoice->issue_date }}">
-         <label for="contractor_city">Datum splatnosti: </label>
-         <input type="date" class="form-control" id="due_date" name="dueDate" value="{{ $invoice->due_date}}">
-         <label for="contractor_city">Zdanitelné plnění: </label>
-         <input type="date" class="form-control" id="" name="">
+         <label for="issue_date">Datum vystavení: </label>
+         <input type="date" class="form-control" id="issue_date" name="issueDate" value="{{ date('Y-m-d', strtotime($invoice->issue_date)) }}">
+         <label for="due_date">Datum splatnosti: </label>
+         <input type="date" class="form-control" id="due_date" name="dueDate" value="{{ date('Y-m-d', strtotime($invoice->due_date)) }}">
          <label>Faktura zaplacena (volitelné)</label>
          <input type="date" class="form-control" name="isPaid" value="{{ $invoice->is_paid }}">
-  
+
        </div>
        </div>
        <br>
-       
+
           <!-- Table row -->
           <div class="row">
            <div class="col-12 table-responsive">
@@ -117,10 +115,10 @@
                <tbody>
                 @foreach ($savedItems as $item)
                    <tr>
-                     <td><input type="text" name="items[{{$item->id}}][name]" value="{{ $saveItem->name }}"></td>
-                     <td><input type="text" name="items[{{$item->id}}][amount]" value="{{ $saveItem->amount }}"></td>
-                     <td><input type="text" name="items[{{$item->id}}][unit]" value="{{ $saveItem->unit }}"></td>
-                     <td><input type="text" name="items[{{$item->id}}][price]" value="{{ $saveItem->price }}"></td>
+                     <td><input type="text" name="items[{{$item->id}}][name]" value="{{ $item->name }}"></td>
+                     <td><input type="text" name="items[{{$item->id}}][amount]" value="{{ $item->amount }}"></td>
+                     <td><input type="text" name="items[{{$item->id}}][unit]" value="{{ $item->unit }}"></td>
+                     <td><input type="text" name="items[{{$item->id}}][price]" value="{{ $item->price }}"></td>
                      <td>21%</td>
                    </tr>
                   @endforeach
@@ -130,13 +128,13 @@
            <!-- /.col -->
          </div>
          <!-- /.row -->
-   
+
          <div class="row">
-           
+
            <!-- /.col -->
            <div class="col-6">
-            
-   
+
+
              <div class="table-responsive">
                <table class="table">
                  <tr>
@@ -165,18 +163,18 @@
            <!-- /.col -->
          </div>
          <!-- /.row -->
- 
+
          <div class="form-row">
            <div class="form-group col-md-12">
                <label for="note">Poznámka</label>
                <input type="text" class="form-control" id="note" name="note" value="{{ $invoice->note }}">
            </div>
        </div>
-   
+
        <div class="card-footer">
         <button type="submit" class="btn btn-primary">Uložit změny</button>
        </div>
-   
+
       </section>
        <!-- /.content -->
        <div class="clearfix"></div>

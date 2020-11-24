@@ -1,18 +1,18 @@
 @extends('adminlte::page')
- 
- 
+
+
 @section('content_header')
    <h1>Nová faktura</h1>
 @endsection
- 
+
 @section('content')
- 
+
 @if (session('success'))
     <div class="alert alert-success">
          {{ session('success') }}
     </div>
 @endif
- 
+
 @if ($errors->any())
    <div class="alert alert-danger">
        <ul>
@@ -22,7 +22,7 @@
        </ul>
    </div>
 @endif
- 
+
 <form role="form" action="{{ route('invoice.store') }}" method="POST">
  @method('post')
  @csrf
@@ -32,7 +32,7 @@
        <!-- vyresi cislo faktury -->
        <div class="form-group col-md-6">
        <label for="bank_account_number">Číslo faktury</label>
-       <input type="text" class="form-control" id="invoice_no" name="invoiceNo" value=" {{ $invoiceNumber }}">
+       <input type="text" class="form-control" id="invoice_number" name="invoiceNumber" value=" {{ $nextInvoiceNumber ?? '' }}">
       </div>
         <!-- info row -->
         <div class="row invoice-info">
@@ -40,22 +40,22 @@
             Dodavatel
             <address>
                 <label for="contractor_name"></label>
-                <input type="text" class="form-control" id="contractor_name" name="contractorName" value= "{{ $user->company_name }}"></strong>
+                <input type="text" class="form-control" id="contractor_name" name="contractorName" value= "{{ '' }}"></strong>
                 <label for="contractor_street"></label>
-                <input type="text" class="form-control" id="contractor_street" name="contractorStreet" value= "{{ $user->street }}">
+                <input type="text" class="form-control" id="contractor_street" name="contractorStreet" value= "{{ '' }}">
                 <label for="contractor_city"></label>
-                <input type="text" class="form-control" id="contractor_city" name="contractorCity" value= "{{ $user->city }}">
+                <input type="text" class="form-control" id="contractor_city" name="contractorCity" value= "{{ '' }}">
                 <label for="contractor_postcode"></label>
-                <input type="text" class="form-control" id="contractor_postcode" name="contractorPostcode" value= "{{ $user->postcode }}">
+                <input type="text" class="form-control" id="contractor_postcode" name="contractorPostcode" value= "{{ '' }}">
                 <label for="contractor_country"></label>
-                <input type="text" class="form-control" id="contractor_country" name="contractorCountry" value= "{{ $user->country }}">
+                <input type="text" class="form-control" id="contractor_country" name="contractorCountry" value= "{{ '' }}">
             </address>
 
             <label for="contractor_identification_number">IČO: </label>
-            <input type="text" class="form-control" id="contractor_identification_number" name="contractorIdentificationNumber" value= "{{ $user->identification_number }}">
+            <input type="text" class="form-control" id="contractor_identification_number" name="contractorIdentificationNumber" value= "{{ '' }}">
             <label for="contractor_city">DIČ: </label>
-            <input type="text" class="form-control" id="contractor_tax_identification_number" name="contractorTaxIdentificationNumber" value= "{{ $user->tax_identification_number }}">
-            
+            <input type="text" class="form-control" id="contractor_tax_identification_number" name="contractorTaxIdentificationNumber" value= "{{ '' }}">
+
           </div>
           <!-- /.col -->
           <div class="col-sm-6 invoice-col">
@@ -64,15 +64,15 @@
                 <div class="form-group col-md-12">
                     <label>Výběr zákazníka</label>
                     <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true" name="customerId">
-                     
+
                       @foreach ($customers as $customer)
-                     
+
                      <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-            
+
                       @endforeach
                     </select>
               <br>
-            </address> 
+            </address>
           </div>
           <!-- /.col -->
         </div>
@@ -103,9 +103,9 @@
               <label for="bank_account_swift">SWIFT</label>
               <input type="text" class="form-control" id="bank_account_swift" name="bankAccountSwift" placeholder="volitelné">
           </div>
-        </div>     
+        </div>
       </div>
-  
+
       <div class="col-sm-6 invoice-col">
         <label for="contractor_city">Datum vystavení: </label>
         <input type="date" class="form-control" id="issue_date" name="issueDate">
@@ -115,11 +115,11 @@
         <input type="date" class="form-control" id="" name="">
         <label>Faktura zaplacena (volitelné)</label>
         <input type="date" class="form-control" name="isPaid">
- 
+
       </div>
       </div>
       <br>
-      
+
          <!-- Table row -->
          <div class="row">
           <div class="col-12 table-responsive">
@@ -154,13 +154,13 @@
           <!-- /.col -->
         </div>
         <!-- /.row -->
-  
+
         <div class="row">
-          
+
           <!-- /.col -->
           <div class="col-6">
-           
-  
+
+
             <div class="table-responsive">
               <table class="table">
                 <tr>
@@ -196,14 +196,14 @@
               <input type="text" class="form-control" id="note" name="note">
           </div>
       </div>
-  
+
       <div class="card-footer">
         <button type="submit" class="btn btn-primary">Vytvořit fakturu</button>
       </div>
-  
+
       </section>
       <!-- /.content -->
       <div class="clearfix"></div>
-  
+
 
 @endsection

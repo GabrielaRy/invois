@@ -18,7 +18,7 @@ class CreateInvoicesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('file', 255)->nullable();
 
-            $table->bigInteger('invoice_no');
+            $table->string('invoice_number', 20);
 
 			$table->string('contractor_name', 255);
 			$table->string('contractor_identification_number', 50);
@@ -40,18 +40,18 @@ class CreateInvoicesTable extends Migration
 			$table->string('bank_account_iban', 255)->nullable();
 			$table->string('bank_account_swift', 255)->nullable();
 
-			$table->string('variable_symbol', 50);
-			$table->string('constant_symbol', 50);
-			$table->string('specific_symbol', 50);
+			$table->string('variable_symbol', 50)->nullable();
+			$table->string('constant_symbol', 50)->nullable();
+			$table->string('specific_symbol', 50)->nullable();
 			$table->string('payment_type', 50);
 
 			$table->date('issue_date');
             $table->date('due_date');
 
-            $table->datetime('is_paid')->nullable();
+            $table->date('is_paid')->nullable();
 
             $table->text('note')->nullable();
-            
+
             $table->integer('total_sum');
 
             $table->timestamps();

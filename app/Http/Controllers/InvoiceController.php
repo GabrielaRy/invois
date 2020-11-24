@@ -2,250 +2,178 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Invoice;
+use App\Http\Requests\StoreInvoice;
 use App\Models\InvoiceItem;
 use App\Models\Customer;
-use App\Models\User;
-use Illuminate\Support\Facades\Input;
+use App\Models\Invoice;
+use Illuminate\Support\Facades\Gate;
 
 class InvoiceController extends Controller
 {
-    public function index() {
-        
+	public function index()
+	{
+		$userId = auth()->user()->id;
+		$invoices = Invoice::where('user_id', $userId)->get();
 
-        $userId = auth()->user()->id;
+		return view('app.invoice.index', compact('invoices'));
+	}
 
-         $invoices = Invoice::where('user_id', $userId)->get();
-         //$invoices = Invoice::get();
+	public function show(Invoice $invoice)
+	{
+		Gate::authorize('manage-own-invoices', $invoice);
 
-        return view('app/invoice/index', compact('invoices', 'userId'));
-    }
+		return view('app.invoice.show', compact('invoice'));
+	}
 
-    public function show($id) {
+	public function create()
+	{
+		$user = auth()->user();
 
-        $invoice = Invoice::with('items')->findOrFail($id);
+		$customers = Customer::where('user_id', $user->id)->get();
+		$nextInvoiceNumber = $this->generateInvoiceNumber(Invoice::where('user_id', $user->id)->latest()->first());
 
-        return view('app/invoice/show', compact('invoice'));
-    }
+		return view('app.invoice.create', compact('customers', 'user', 'nextInvoiceNumber'));
+	}
 
-    public function create() {
+	public function store(StoreInvoice $request)
+	{
+		$request->validated();
 
-        $userId = auth()->user()->id;
+		$user = auth()->user();
 
-        $user = User::findorFail($userId);
-        
-        $customers = Customer::where('user_id', $userId)->get();
+		if (!$customer = Customer::where('user_id', $user->id)->find($request->customerId)) {
+			return redirect()->back()->with('error', 'Tento zákazník neexistuje');
+		};
 
-        $record = Invoice::where('user_id', $userId)->latest()->first();
-        
-        if ($record === NULL) {
-            $invoiceNumber = date('Y').'0001';
-        } else { 
+		$invoice = Invoice::create([
+			'user_id' => $user->id,
+			'invoice_number' => $request->invoiceNumber,
+			'contractor_name' => $request->contractorName,
+			'contractor_street' => $request->contractorStreet,
+			'contractor_city' => $request->contractorCity,
+			'contractor_postcode' => $request->contractorPostcode,
+			'contractor_identification_number' => $request->contractorIdentificationNumber,
+			'contractor_tax_identification_number' => $request->contractorTaxIdentificationNumber,
+			'contractor_country' => $request->contractorCountry,
+			'payment_type' => $request->paymentType,
+			'bank_account_number' => $request->bankAccountNumber,
+			'bank_account_iban' => $request->bankAccountIban,
+			'bank_account_swift' => $request->bankAccountSwift,
+			'variable_symbol' => $request->variableSymbol,
+			'constant_symbol' => $request->constantSymbol,
+			'specific_symbol' => $request->specificSymbol,
+			'issue_date' => $request->issueDate,
+			'due_date' => $request->dueDate,
+			'note' => $request->note,
 
-        $expNum = explode('-', $record->invoice_no);
-        $year = date("Y");
-        
-        //check first day in a year
-        if  ($year == date('l',strtotime(date('Y-01-01'))) ) {
-        $invoiceNumber = date('Y').'0001';
-        } else {
-        //increase 1 with last invoice number
-        $invoiceNumber = $expNum[0]+1;
-        }
-        }
+			'customer_name' => $customer->name,
+			'customer_identification_number' => $customer->identification_number,
+			'customer_tax_identification_number' => $customer->tax_identification_number,
+			'customer_street' => $customer->street,
+			'customer_city' => $customer->city,
+			'customer_postcode' => $customer->postcode,
+			'customer_country' => $customer->country,
 
-        return view('app/invoice/create', compact('customers', 'user', 'invoiceNumber'));
-    }
+			'total_sum' => $this->getItemsSum($request->items),
+		]);
 
-    public function store(Request $request) {
 
-        $authUserId = auth()->user()->id;
+		foreach ($request->items as $item) {
+			InvoiceItem::create([
+				'invoice_id' => $request->id,
+				'name' => $item['name'],
+				'amount' => $item['amount'],
+				'unit' => $item['unit'],
+				'price' => $item['price'],
+				'sum' => (int)$item['amount'] * (int)$item['price'],
+			]);
+		}
 
-        $userCustomers = User::find($authUserId);
+		return redirect()->route('invoice.show', $request->id)->with('success', 'Faktura byla úspěšně vytvořena');
+	}
 
-        $customer = Customer::findOrFail($request->input('customerId'));
+	public function edit(Invoice $invoice)
+	{
+		Gate::authorize('manage-own-invoices', $invoice);
 
-        //$savedItems = InvoiceItem:: where('invoice_id', $id)->get();
-        //dd($customer->name);
-        
-        $request->validate([
-            'invoiceNo' => 'required|string',
-            'contractorName' => 'required|string',
-            'contractorStreet' => 'required|string',
-            'contractorCity' => 'required|string',
-            'contractorPostcode' => 'required|string',
-            'contractorCountry' => 'required|string',
-            'contractorIdentificationNumber' => 'required|string',
-            'contractorTaxIdentificationNumber' => 'nullable|string',
-            'paymentType' => 'required|string',
-            'bankAccountNumber' => 'nullable|string',
-            'bankAccountIban' => 'nullable|string',
-            'bankAccountSwift' => 'nullable|string',
-            'variableSymbol' => 'required|string',
-            'constantSymbol' => 'required|string',
-            'specificSymbol' => 'required|string',
-            'issueDate' => 'required',
-            'dueDate' => 'required',
-            'isPaid' => 'nullable',
-            'note' => 'nullable|string',
-            'name.*' => 'required|string',
-            'amount.*' => 'required|string',
-            'price.*' => 'required|string',
-            'unit.*' => 'required|string',
- 
-        ]);
-    
+		$savedItems = $invoice->getRelationValue('items');
+		$user = auth()->user();
+		$customers = Customer::where('user_id', $user->id)->get();
 
-        $invoice = new Invoice;
+		return view('app/invoice/edit', compact('invoice', 'user', 'customers', 'savedItems'));
+	}
 
-        $invoice->user_id = $authUserId;
-        $invoice->invoice_no = $request->input('invoiceNo');
-        $invoice->contractor_name = $request->input('contractorName');
-        $invoice->contractor_street = $request->input('contractorStreet');
-        $invoice->contractor_city = $request->input('contractorCity');
-        $invoice->contractor_postcode = $request->input('contractorPostcode');
-        $invoice->contractor_identification_number = $request->input('contractorIdentificationNumber');
-        $invoice->contractor_tax_identification_number = $request->input('contractorTaxIdentificationNumber');
-        $invoice->contractor_country = $request->input('contractorCountry');
-        $invoice->payment_type = $request->input('paymentType');
-        $invoice->bank_account_number = $request->input('bankAccountNumber');
-        $invoice->bank_account_iban = $request->input('bankAccountIban');
-        $invoice->bank_account_swift = $request->input('bankAccountSwift');
-        $invoice->variable_symbol = $request->input('variableSymbol');
-        $invoice->constant_symbol = $request->input('constantSymbol');
-        $invoice->specific_symbol = $request->input('specificSymbol');
-        $invoice->issue_date = $request->input('issueDate');
-        $invoice->due_date = $request->input('dueDate');
-        $invoice->is_paid = $request->input('isPaid');
-        $invoice->note = $request->input('note');
+	public function update(StoreInvoice $request, $id)
+	{
 
-        $invoice->customer_name = $customer->name;
-        $invoice->customer_identification_number = $customer->identification_number;
-        $invoice->customer_tax_identification_number = $customer->tax_identification_number;
-        $invoice->customer_street = $customer->street;
-        $invoice->customer_city = $customer->city;
-        $invoice->customer_postcode = $customer->postcode;
-        $invoice->customer_country = $customer->country;
+		$request->validated();
 
-        $sum = 0;
+		$invoice = Invoice::findOrFail($id);
+		Gate::authorize('manage-own-invoices', $invoice);
 
-        foreach ($request->input('items') as $item) {
-        
-            $sum += $item->price * $item->amount;
-        }
-        dd($sum);
+		$invoice->update([
+			'payment_type' => $request->paymentType,
+			'bank_account_number' => $request->bankAccountNumber,
+			'bank_account_iban' => $request->bankAccountIban,
+			'bank_account_swift' => $request->bankAccountSwift,
+			'variable_symbol' => $request->variableSymbol,
+			'constant_symbol' => $request->constantSymbol,
+			'specific_symbol' => $request->specificSymbol,
+			'issue_date' => $request->issueDate,
+			'due_date' => $request->dueDate,
+			'is_paid' => $request->isPaid,
+			'note' => $request->note,
+		]);
 
-        $invoice->save();
-    
+		InvoiceItem::where('invoice_id', $invoice->id)->delete();
 
-        $items = $request->get('items');
-        
-        foreach ($items as $item) {
+		foreach ($request->items as $item) {
+			$itemSave = new InvoiceItem;
 
-            $itemSave = new InvoiceItem;
+			$itemSave->invoice_id = $invoice->id;
+			$itemSave->name = $item['name'];
+			$itemSave->amount = $item['amount'];
+			$itemSave->unit = $item['unit'];
+			$itemSave->price = $item['price'];
+			$itemSave->sum = (int)$item['amount'] * (int)$item['price'];
 
-            $itemSave->invoice_id = $invoice->id;
-            $itemSave->name = $item['name'];
-            $itemSave->amount = $item['amount'];
-            $itemSave->unit = $item['unit'];
-            $itemSave->price = $item['price'];
+			$itemSave->save();
+		}
 
-            $sum = int('unit') * int('sum');
+		return redirect()->route('invoice.show', $id)->with('success', 'Faktura byla úspěšně změněna');
+	}
 
-            $itemSave->sum = $sum;
-            
-            $itemSave->save();
-        }
+	public function destroy(Invoice $invoice)
+	{
+		Gate::authorize('manage-own-invoices', $invoice);
 
-        return redirect()->route('invoice.index')->with('success', 'Faktura byla vytvořena');
+		Invoice::destroy($invoice->id);
 
-    }
+		return redirect()->route('invoice.index')->with('success', 'Faktura byla úspěšně smazána');
+	}
 
-    public function edit($id) {
+	private function getItemsSum(array $items)
+	{
+		return array_reduce($items, function ($state, $item) {
+			$state += ($item['price'] * $item['amount']);
 
-        $invoice = Invoice::with('items')->findOrFail($id);
+			return $state;
+		});
+	}
 
-        $authUserId = auth()->user()->id;
+	private function generateInvoiceNumber(?Invoice $invoice)
+	{
+		if (is_null($invoice)) {
+			return date('Y') . '-0001';
+		} else {
+			$lastInsertedInvoiceNumber = explode('-', $invoice->invoice_number);
 
-        $user = User::findOrFail($authUserId);
+			if ($lastInsertedInvoiceNumber[0] !== date('Y')) {
+				return date('Y') . '-0001';
+			}
 
-        $savedItems = InvoiceItem:: where('invoice_id', $id)->get();
-        
-        $customers = Customer::where('user_id', $authUserId)->get();
-
-        return view('app/invoice/edit', compact('invoice', 'user', 'customers', 'savedItems'));
-    }
-
-    public function update(Request $request, $id) {
-      
-        $request->validate([
-            'invoiceNo' => 'required|string',
-            'paymentType' => 'required|string',
-            'bankAccountNumber' => 'nullable|string',
-            'bankAccountIban' => 'nullable|string',
-            'bankAccountSwift' => 'nullable|string',
-            'variableSymbol' => 'required|string',
-            'constantSymbol' => 'required|string',
-            'specificSymbol' => 'required|string',
-            'issueDate' => 'required',
-            'dueDate' => 'required',
-            'isPaid' => 'nullable',
-            'note' => 'nullable|string',
-            'name.*' => 'required|string',
-            'amount.*' => 'required|string',
-            'price.*' => 'required|string',
-            'unit.*' => 'required|string',
-
-        ]);
-            
-        $authUserId = auth()->user()->id;
-
-        $userCustomers = User::find($authUserId);
-        
-       // $customer = Customer::findOrFail($request->input('customerId'));
-        
-        $invoice = Invoice::findOrFail($id);
-        
-        $invoice->invoice_no = $request->input('invoiceNo');
-        $invoice->payment_type = $request->input('paymentType');
-        $invoice->bank_account_number = $request->input('bankAccountNumber');
-        $invoice->bank_account_iban = $request->input('bankAccountIban');
-        $invoice->bank_account_swift = $request->input('bankAccountSwift');
-        $invoice->variable_symbol = $request->input('variableSymbol');
-        $invoice->constant_symbol = $request->input('constantSymbol');
-        $invoice->specific_symbol = $request->input('specificSymbol');
-        $invoice->issue_date = $request->input('issueDate');
-        $invoice->due_date = $request->input('dueDate');
-        $invoice->is_paid = $request->input('isPaid');
-        $invoice->note = $request->input('note');
-
-        $invoice->save();
-
-        $deleteItems = InvoiceItem:: where('invoice_id', $id)->delete();
-
-        $items = $request->get('items');
-        
-        foreach ($items as $item) {
-           
-            $itemSave = new InvoiceItem;
-
-            $itemSave->invoice_id = $invoice->id;
-            $itemSave->name = $item['name'];
-            $itemSave->amount = $item['amount'];
-            $itemSave->unit = $item['unit'];
-            $itemSave->price = $item['price'];
-            $itemSave->sum = $sum;
-            
-            $itemSave->save();
-        }
-        return redirect()->route('invoice.show', $id)->with('success', 'Údaje byly změněny');
-    }
-
-    public function destroy($id) {
-
-        $invoice = Invoice::destroy($id);
-        
-        return redirect()->route('invoice.index')->with('success', 'Faktura byla smazána');
-    }
+			$counter = (int)$lastInsertedInvoiceNumber[1];
+			return date('Y') . '-' . ++$counter;
+		}
+	}
 }

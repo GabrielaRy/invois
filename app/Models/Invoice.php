@@ -9,8 +9,10 @@ class Invoice extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
 	/**
-	 * Invoice belongs to user
+	 * StoreInvoice belongs to user
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
@@ -20,12 +22,17 @@ class Invoice extends Model
     }
 
 	/**
-	 * Invoice has many (invoice) items
+	 * StoreInvoice has many (invoice) items
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function items()
 	{
 		return $this->hasMany(InvoiceItem::class);
+    }
+
+	public function canView()
+	{
+		return (int) $this->user_id === (int) auth()->user()->id;
     }
 }

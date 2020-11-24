@@ -28,8 +28,8 @@ class InvoiceFactory extends Factory
 			'user_id' => 1,
 			'file' => '/' . implode('/', $this->faker->words($this->faker->numberBetween(0, 4))) . '/' . $this->faker->word . '.' . $this->faker->lexify('???'),
 
-			'invoice_no' => $this->faker->randomNumber(9),
-			
+			'invoice_number' => date('Y') . '-' . $this->faker->randomNumber(4),
+
 			'contractor_name' => $this->faker->name,
 			'contractor_identification_number' => $identificationNumber,
 			'contractor_tax_identification_number' => 'CZ' . $identificationNumber,

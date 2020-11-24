@@ -10,7 +10,7 @@ class InvoiceItem extends Model
     use HasFactory;
 
 	/**
-	 * Invoice item belongs to invoice
+	 * StoreInvoice item belongs to invoice
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
