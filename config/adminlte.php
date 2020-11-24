@@ -265,6 +265,11 @@ return [
             'text' => 'Nastavení faktur',
             'url'  => 'app/invoicesettings',
         ],
+
+        [
+            'text' => 'Fakturační údaje',
+            'url'  => '/app/user',
+        ],
         [
             'text'    => 'multilevel',
             'icon'    => 'fas fa-fw fa-share',
@@ -311,10 +316,17 @@ return [
             'url'  => 'app/customers',
         ],
 
+        ['header' => 'Fakturace'],
+
         [
-            'text' => 'Fakturační údaje',
-            'url'  => '/app/user',
+            'text' => 'Nová faktura',
+            'url'  => '/app/invoice/create',
         ],
+        [
+            'text' => 'Vystavené faktury',
+            'url'  => '/app/invoice',
+        ],
+
 
         ['header' => 'labels'],
         [

@@ -18,6 +18,8 @@ class CreateInvoicesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('file', 255)->nullable();
 
+            $table->bigInteger('invoice_no');
+
 			$table->string('contractor_name', 255);
 			$table->string('contractor_identification_number', 50);
 			$table->string('contractor_tax_identification_number', 50);
@@ -28,7 +30,7 @@ class CreateInvoicesTable extends Migration
 
 			$table->string('customer_name', 255);
 			$table->string('customer_identification_number', 50);
-			$table->string('customer_tax_identification_number', 50);
+			$table->string('customer_tax_identification_number', 50)->nullable();
 			$table->string('customer_street', 255);
 			$table->string('customer_city', 255);
 			$table->string('customer_postcode', 50);
@@ -48,7 +50,9 @@ class CreateInvoicesTable extends Migration
 
             $table->datetime('is_paid')->nullable();
 
-			$table->text('note')->nullable();
+            $table->text('note')->nullable();
+            
+            $table->integer('total_sum');
 
             $table->timestamps();
 
