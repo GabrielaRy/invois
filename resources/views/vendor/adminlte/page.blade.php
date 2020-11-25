@@ -48,6 +48,11 @@
 							Vaše emailová adresa byla úspěšně potvrzena.
 						</div>
 					@endif
+					@if(session()->has('success'))
+						<div class="alert alert-success" role="alert">
+							{{ session()->get('success') }}
+						</div>
+					@endif
 					@yield('content_header')
                 </div>
             </div>

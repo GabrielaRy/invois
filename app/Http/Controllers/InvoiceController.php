@@ -38,32 +38,31 @@ class InvoiceController extends Controller
 	public function store(StoreInvoice $request)
 	{
 		$request->validated();
-
 		$user = auth()->user();
 
-		if (!$customer = Customer::where('user_id', $user->id)->find($request->customerId)) {
+		if (!$customer = Customer::where('user_id', $user->id)->find($request->customer_id)) {
 			return redirect()->back()->with('error', 'Tento zákazník neexistuje');
 		};
-
+		//TODO: Předělat na transakci
 		$invoice = Invoice::create([
 			'user_id' => $user->id,
-			'invoice_number' => $request->invoiceNumber,
-			'contractor_name' => $request->contractorName,
-			'contractor_street' => $request->contractorStreet,
-			'contractor_city' => $request->contractorCity,
-			'contractor_postcode' => $request->contractorPostcode,
-			'contractor_identification_number' => $request->contractorIdentificationNumber,
-			'contractor_tax_identification_number' => $request->contractorTaxIdentificationNumber,
-			'contractor_country' => $request->contractorCountry,
-			'payment_type' => $request->paymentType,
-			'bank_account_number' => $request->bankAccountNumber,
-			'bank_account_iban' => $request->bankAccountIban,
-			'bank_account_swift' => $request->bankAccountSwift,
-			'variable_symbol' => $request->variableSymbol,
-			'constant_symbol' => $request->constantSymbol,
-			'specific_symbol' => $request->specificSymbol,
-			'issue_date' => $request->issueDate,
-			'due_date' => $request->dueDate,
+			'invoice_number' => $request->invoice_number,
+			'contractor_name' => $user->company_name,
+			'contractor_street' => $user->street,
+			'contractor_city' => $user->city,
+			'contractor_postcode' => $user->postcode,
+			'contractor_identification_number' => $user->identification_number,
+			'contractor_tax_identification_number' => $user->tax_identification_number ?? '',
+			'contractor_country' => $user->country,
+			'payment_type' => $request->payment_type,
+			'bank_account_number' => $request->bank_account_number,
+			'bank_account_iban' => $request->bank_account_iban,
+			'bank_account_swift' => $request->bank_account_swift,
+			'variable_symbol' => $request->variable_symbol,
+			'constant_symbol' => $request->constant_symbol,
+			'specific_symbol' => $request->specific_symbol,
+			'issue_date' => $request->issue_date,
+			'due_date' => $request->due_date,
 			'note' => $request->note,
 
 			'customer_name' => $customer->name,
@@ -80,16 +79,17 @@ class InvoiceController extends Controller
 
 		foreach ($request->items as $item) {
 			InvoiceItem::create([
-				'invoice_id' => $request->id,
+				'invoice_id' => $invoice->id,
 				'name' => $item['name'],
 				'amount' => $item['amount'],
 				'unit' => $item['unit'],
 				'price' => $item['price'],
-				'sum' => (int)$item['amount'] * (int)$item['price'],
+				'vat' => $item['vat'] ?? 0,
+				'sum' => $this->calculateVat($item['amount'], $item['price'], $item['vat'] ?? null)
 			]);
 		}
 
-		return redirect()->route('invoice.show', $request->id)->with('success', 'Faktura byla úspěšně vytvořena');
+		return redirect()->route('invoice.show', $invoice->id)->with('success', 'Faktura byla úspěšně vytvořena');
 	}
 
 	public function edit(Invoice $invoice)
@@ -105,7 +105,6 @@ class InvoiceController extends Controller
 
 	public function update(StoreInvoice $request, $id)
 	{
-
 		$request->validated();
 
 		$invoice = Invoice::findOrFail($id);
@@ -135,7 +134,7 @@ class InvoiceController extends Controller
 			$itemSave->amount = $item['amount'];
 			$itemSave->unit = $item['unit'];
 			$itemSave->price = $item['price'];
-			$itemSave->sum = (int)$item['amount'] * (int)$item['price'];
+			$itemSave->sum = $this->calculateVat($item['amount'], $item['price'], $item['vat'] ?? null);
 
 			$itemSave->save();
 		}
@@ -174,6 +173,15 @@ class InvoiceController extends Controller
 
 			$counter = (int)$lastInsertedInvoiceNumber[1];
 			return date('Y') . '-' . ++$counter;
+		}
+	}
+
+	private function calculateVat($amount, $price, $vat)
+	{
+		if (!$vat) {
+			return round((int) $amount * (int) $price, 2);
+		} else {
+			return round(((int) $price * (int) $amount) * floatval(1 . '.' . $vat), 2);
 		}
 	}
 }

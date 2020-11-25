@@ -7,50 +7,52 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function edit() {
+	public function edit()
+	{
 
-        $id = auth()->user()->id;
+		$id = auth()->user()->id;
 
-        $user = User::findorFail($id);
+		$user = User::findorFail($id);
 
-        return view('app/user/edit', compact('user'));
-        
-    }
+		return view('app/user/edit', compact('user'));
 
-    public function update (Request $request) {
+	}
 
-        $request->validate([
-            'identificationNumber'  => 'required|min:8',
-            'taxIdentificationNumber'  => 'nullable|string',
-            'street'  => 'required|string',
-            'city'  => 'required|string',
-            'postcode'  => 'required|string',
-            'country'  => 'required|string',
-            'contactPersonName' => 'nullable|string',
-            'contactPersonPhone' => 'nullable|string',
-            'contactPersonEmail' => 'nullable|string',
-            'contactPersonWebsite' => 'nullable|string',
-            
-        ]);
-        $id = auth()->user()->id;
-        
-        $user = User::findOrFail($id);
+	public function update(Request $request)
+	{
 
-        $user->identification_number = $request->input('identificationNumber');
-        $user->tax_identification_number = $request->input('taxIdentificationNumber');
-        $user->company_name = $request->input('companyName');
-        $user->street = $request->input('street');
-        $user->city = $request->input('city');
-        $user->postcode = $request->input('postcode');
-        $user->country = $request->input('country');
-        $user->contact_person_name = $request->input('contactPersonName');
-        $user->contact_person_phone = $request->input('contactPersonPhone');
-        $user->contact_person_email = $request->input('contactPersonEmail');
-        $user->contact_person_website = $request->input('contactPersonWebsite');
+		$request->validate([
+			'identification_number' => 'required|min:8',
+			'tax_identification_number' => 'nullable|string',
+			'street' => 'required|string',
+			'city' => 'required|string',
+			'postcode' => 'required|string',
+			'country' => 'required|string',
+			'contact_person_name' => 'nullable|string',
+			'contact_person_phone' => 'nullable|string',
+			'contact_person_email' => 'nullable|string',
+			'contact_person_website' => 'nullable|string',
 
-        $user->save();
+		]);
+		$id = auth()->user()->id;
 
-        return redirect()->route('user.edit', $id)->with('success', 'Změny byly uloženy');
-    }
+		$user = User::findOrFail($id);
+
+		$user->identification_number = $request->input('identification_number');
+		$user->tax_identification_number = $request->input('tax_identification_number');
+		$user->company_name = $request->input('company_name');
+		$user->street = $request->input('street');
+		$user->city = $request->input('city');
+		$user->postcode = $request->input('postcode');
+		$user->country = $request->input('country');
+		$user->contact_person_name = $request->input('contact_person_name');
+		$user->contact_person_phone = $request->input('contact_person_phone');
+		$user->contact_person_email = $request->input('contact_person_email');
+		$user->contact_person_website = $request->input('contact_person_website');
+
+		$user->save();
+
+		return redirect()->route('user.edit')->with('success', 'Změny byly uloženy');
+	}
 
 }

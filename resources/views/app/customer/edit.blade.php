@@ -6,10 +6,9 @@
 
 @section('content')
 
-<form action="{{ action('CustomerController@update', $customer->id) }}" method="POST">
+<form action="{{ route('customers.update', $customer->id) }}" method="POST">
     @csrf
     @method('patch')
-
 
     <h5>Identifikace</h5>
     <div class="form-row">
@@ -19,15 +18,15 @@
         </div>
         <div class="form-group col-md-4">
           <label for="identification_number	">IČO</label>
-          <input type="text" class="form-control" id="identificationNumber" name="identificationNumber" value="{{ $customer->identification_number }}">
+          <input type="text" class="form-control" id="identification_number" name="identification_number" value="{{ $customer->identification_number }}">
         </div>
         <div class="form-group col-md-4">
             <label for="tax_identification_number">DIČ</label>
-            <input type="text" class="form-control" id="taxIdentificationNumber" name="taxIdentificationNumber" value="{{ $customer->tax_identification_number }}">
+            <input type="text" class="form-control" id="tax_identification_number" name="tax_identification_number" value="{{ $customer->tax_identification_number }}">
           </div>
-          <button type="button" class="btn btn-secondary">Načíst data</button>
+          <button type="button" class="btn btn-secondary" id="fetch-customer-from-ares">Načíst data</button>
       </div>
-    
+
     <h5>Adresa<h5>
     <div class="form-row">
         <div class="form-group col-md-6">
@@ -49,20 +48,20 @@
         <input type="text" class="form-control" id="country" name="country" value="{{ $customer->country }}">
       </div>
     </div>
-    
+
     <h5>Kontaktní osoba<h5>
     <div class="form-row">
         <div class="form-group col-md-4">
             <label for="contact_person_name">Jméno</label>
-            <input type="text" class="form-control" id="contactPersonName" name="contactPersonName" value="{{ $customer->contact_person_name }}">
+            <input type="text" class="form-control" id="contact_person_name" name="contact_person_name" value="{{ $customer->contact_person_name }}">
         </div>
         <div class="form-group col-md-4">
             <label for="contact_person_phone">Telefon</label>
-            <input type="text" class="form-control" id="contactPersonPhone" name="contactPersonPhone" value="{{ $customer->contact_person_phone }}">
+            <input type="text" class="form-control" id="contact_person_phone" name="contact_person_phone" value="{{ $customer->contact_person_phone }}">
         </div>
         <div class="form-group col-md-4">
             <label for="contact_person_email">Email</label>
-            <input type="email" class="form-control" id="contactPersonEmail" name="contactPersonEmail" value="{{ $customer->contact_person_email }}">
+            <input type="email" class="form-control" id="contact_person_email" name="contact_person_email" value="{{ $customer->contact_person_email }}">
         </div>
     </div>
 
@@ -74,7 +73,7 @@
         </div>
         <div class="form-group col-md-2">
             <label for="invoice_due_date">Splatnost faktur</label>
-            <input type="text" class="form-control" id="invoiceDueDate" name="invoiceDueDate" value="{{ $customer->invoice_due_date }}">
+            <input type="text" class="form-control" id="invoice_due_date" name="invoice_due_date" value="{{ $customer->invoice_due_date }}">
         </div>
     </div>
     <button type="submit" class="btn btn-secondary">Uložit změny</button>
