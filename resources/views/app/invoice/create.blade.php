@@ -2,153 +2,167 @@
 
 
 @section('content_header')
-	<h1>Nová faktura</h1>
+	<h1 style="font-weight: 600;">Nová faktura</h1>
 @endsection
 
 @section('content')
-
-	@if ($errors->any())
-		<div class="alert alert-danger">
-			<ul>
-				@foreach ($errors->all() as $error)
-					<li>{{ $error }}</li>
-				@endforeach
-			</ul>
-		</div>
-	@endif
-
-	<form role="form" action="{{ route('invoice.store') }}" method="POST">
-	@csrf
-
-	<!-- Main content -->
-		<section class="invoice">
-			<!-- vyresi cislo faktury -->
-			<div class="form-group col-md-6">
-				<label for="invoice_number_placeholder">Číslo faktury</label>
-				<input type="text" class="form-control" id="invoice_number_placeholder"
-					   name="invoice_number_placeholder"
-					   value=" {{ $nextInvoiceNumber }}" disabled>
+	<section class="invoice p-4 rounded">
+		<form role="form" action="{{ route('invoice.store') }}" method="POST">
+			@csrf
+			<div class="form-group col-md-12 mb-5">
+				<h2 class="text-gray text-md-right" style="font-size: 1.6rem;">Faktura číslo <span class="text-dark"
+																								   style="font-weight: 600;">{{ $nextInvoiceNumber }}</span>
+				</h2>
 				<input type="hidden" name="invoice_number" value="{{ $nextInvoiceNumber }}">
 			</div>
-			<!-- info row -->
-			<div class="row invoice-info">
-				<div class="col-sm-6 invoice-col">
-					Dodavatel
-					<address>
-						<label for="contractor_name">Název subjektu</label>
-						<input type="text" class="form-control" id="contractor_name"
-							   value="{{ $user->company_name }}" disabled>
-						<label for="contractor_street">Ulice</label>
-						<input type="text" class="form-control" id="contractor_street"
-							   value="{{ $user->street }}" disabled>
-						<label for="contractor_city">Město</label>
-						<input type="text" class="form-control" id="contractor_city"
-							   value="{{ $user->city }}" disabled>
-						<label for="contractor_postcode">PSČ</label>
-						<input type="text" class="form-control" id="contractor_postcode"
-							   value="{{ $user->postcode }}" disabled>
-						<label for="contractor_country">Země</label>
-						<input type="text" class="form-control" id="contractor_country"
-							   value="{{ $user->country }}" disabled>
-					</address>
 
-					<label for="contractor_identification_number">IČO: </label>
-					<input type="text" class="form-control" id="contractor_identification_number"
-						   name="contractorIdentificationNumber" value="{{ $user->identification_number }}" disabled>
-					@if($user->tax_identification_number)
-						<label for="contractor_city">DIČ: </label>
-						<input type="text" class="form-control" id="contractor_tax_identification_number"
-							   value="{{ $user->tax_identification_number }}" disabled>
-					@endif
+			<div class="d-flex w-100 justify-content-end">
+				<div class="col-sm-12 col-md-6">
+					<select class="form-control select2 select2-hidden-accessible" name="customer_id"
+							id="customer-dropdown">
+						<option value disabled selected>Vyberte odběratele</option>
 
+						@foreach ($customers as $customer)
+							<option value="{{ $customer->id }}">{{ $customer->name }}</option>
+						@endforeach
+					</select>
+					<br>
 				</div>
-				<!-- /.col -->
-				<div class="col-sm-6 invoice-col" id="customer-data-root">
-					Odběratel
-					<address>
-						<div class="form-group col-md-12">
-							<label>Výběr zákazníka</label>
-							<select class="form-control select2 select2-hidden-accessible" style="width: 100%;"
-									data-select2-id="1" tabindex="-1" aria-hidden="true" name="customer_id"
-									id="customer-dropdown">
-								<option value disabled selected>Vyberte odběratele</option>
-
-								@foreach ($customers as $customer)
-
-									<option value="{{ $customer->id }}">{{ $customer->name }}</option>
-
-								@endforeach
-							</select>
-							<br>
-						</div>
-					</address>
-
-					<div>
-						<label for="contractor_name" class="d-none" id="customer_name_label">Název subjektu</label>
-						<input type="text" class="form-control d-none" id="customer_name" name="contractor_name"
-							   disabled>
-						<label for="contractor_street" class="d-none" id="customer_street_label">Ulice</label>
-						<input type="text" class="form-control d-none" id="customer_street" name="contractor_street"
-							   disabled>
-						<label for="contractor_city" class="d-none" id="customer_city_label">Město</label>
-						<input type="text" class="form-control d-none" id="customer_city" name="contractor_city"
-							   disabled>
-						<label for="contractor_postcode" class="d-none" id="customer_postcode_label">PSČ</label>
-						<input type="text" class="form-control d-none" id="customer_postcode" name="contractor_postcode"
-							   disabled>
-						<label for="contractor_country" class="d-none" id="customer_country_label">Země</label>
-						<input type="text" class="form-control d-none" id="customer_country" disabled>
-						<label for="contractor_name" class="d-none"
-							   id="customer_identification_number_label">IČO</label>
-						<input type="text" class="form-control d-none" id="customer_identification_number"
-							   name="contractor_name"
-							   disabled>
-						<label for="contractor_street" class="d-none"
-							   id="customer_tax_identification_number_label">DIČ</label>
-						<input type="text" class="form-control d-none" id="customer_tax_identification_number"
-							   name="contractor_street"
-							   disabled>
-					</div>
-
-				</div>
-				<!-- /.col -->
 			</div>
-			<!-- /.row -->
-			<hr>
+
 			<div class="row invoice-info">
 				<div class="col-sm-6 invoice-col">
-					<label for="contractor_city">Variabilní symbol: </label>
-					<input type="text" class="form-control" id="variable_symbol" name="variableSymbol">
-					<label for="contractor_city">Konstantní symbol: </label>
-					<input type="text" class="form-control" id="constant_symbol" name="constantSymbol">
-					<label for="contractor_city">Specifický symbol: </label>
-					<input type="text" class="form-control" id="specific_symbol" name="specificSymbol">
-					<div class="form-group col-md-12">
-						<label>Způsob platby</label>
-						<select class="form-control select2 select2-hidden-accessible" style="width: 100%;"
-								data-select2-id="1" tabindex="-1" aria-hidden="true" name="payment_type">
-							<option value="bankovní převod">Bankovní převod</option>
-							<option value="hotovost">Hotovost</option>
-							<option value="dobirka">Dobírka</option>
-						</select>
+					<p class="font-weight-bold text-gray" style="letter-spacing: 3px;">DODAVATEL</p>
+					<div class="mt-2">
+						<p class="mb-0 font-weight-bold">{{ $user->contact_person_name }}</p>
+						<input type="hidden" class="form-control" value="{{ $user->contact_person_name }}" disabled>
+
+						<p class="mb-0">{{ $user->street }}</p>
+						<input type="hidden" class="form-control" value="{{ $user->street }}">
+
+						<p class="mb-0">{{ $user->postcode }} {{ $user->city }}</p>
+						<input type="hidden" class="form-control" value="{{ $user->city }}">
+
+						<input type="hidden" class="form-control" value="{{ $user->postcode }}">
+
+						<p class="mb-0">{{ $user->country }}</p>
+						<input type="hidden" class="form-control" value="{{ $user->country }}">
 					</div>
-					<div class="row invoice-info">
-						<div class="col-sm-6 invoice-col">
-							<label for="bank_account_number">Číslo účtu</label>
-							<input type="text" class="form-control" id="bank_account_number" name="bankAccountNumber">
-							<label for="bank_account_iban">IBAN</label>
-							<input type="text" class="form-control" id="bank_account_iban" name="bankAccountIban">
-							<label for="bank_account_swift">SWIFT</label>
-							<input type="text" class="form-control" id="bank_account_swift" name="bankAccountSwift">
+
+					<div class="mt-4">
+						<p>IČO {{ $user->identification_number }}</p>
+						<input type="hidden" class="form-control" name="contractor_dentification_umber"
+							   value="{{ $user->identification_number }}">
+						@if($user->tax_identification_number)
+							<p>DIČ {{ $user->tax_identification_number }}</p>
+							<input type="hidden" class="form-control" id="contractor_tax_identification_number"
+								   value="{{ $user->tax_identification_number }}">
+						@endif
+					</div>
+				</div>
+				<div class="col-sm-6 invoice-col d-none" id="customer-data-root">
+					<p class="font-weight-bold text-gray" id="odberatel_heading" style="letter-spacing: 3px;"></p>
+					<div>
+						<p class="mb-0 font-weight-bold" id="customer_name"></p>
+						<input type="hidden" id="customer_name_input" name="contractor_name">
+
+						<p class="mb-0" id="customer_street"></p>
+						<input type="hidden" id="customer_street_input" name="contractor_street">
+
+						<input type="hidden" id="customer_city_input" name="contractor_city">
+
+						<p class="mb-0"><span id="customer_postcode"></span>&nbsp;<span id="customer_city"></span></p>
+						<input type="hidden" id="customer_postcode_input" name="contractor_postcode">
+
+						<p class="mb-0" id="customer_country"></p>
+						<input type="hidden" id="customer_country_input" name="contractor_country">
+					</div>
+					<div class="mt-4">
+						<p class="mb-0" id="customer_identification_number"></p>
+						<input type="hidden" id="customer_identification_number_input"
+							   name="contractor_identification_number">
+
+						<p class="mb-0" id="customer_tax_identification_number"></p>
+						<input type="hidden" id="customer_tax_identification_number_input"
+							   name="contractor_tax_identification_number">
+					</div>
+				</div>
+			</div>
+
+			<hr class="my-4">
+
+			<div class="row invoice-info">
+				<div class="col-sm-6 invoice-col">
+					<div class="d-md-flex">
+						<div>
+							<label for="variable_symbol">Variabilní symbol: </label>
+							<input type="text" class="form-control @error('variable_symbol') is-invalid @enderror" value="{{ old('variable_symbol') }}" id="variable_symbol" name="variable_symbol">
+							@error('variable_symbol')
+							<div class="invalid-feedback">
+								<strong>{{ $message }}</strong>
+							</div>
+							@enderror
+						</div>
+						<div class="ml-md-4">
+							<label for="constant_symbol">Konstantní symbol: </label>
+							<input type="text" class="form-control @error('constant_symbol') is-invalid @enderror" id="constant_symbol" name="constant_symbol"
+								   value="{{ $invoiceSettings->constant_symbol ?? '' }}">
+							@error('constant_symbol')
+							<div class="invalid-feedback">
+								<strong>{{ $message }}</strong>
+							</div>
+							@enderror
 						</div>
 					</div>
+					<div class="d-md-flex mt-2">
+						<div class="mt-2" id="payment-type-root">
+							<label>Způsob platby</label>
+							<select class="form-control select2 select2-hidden-accessible" id="payment-type"
+									name="payment_type">
+								<option
+									value="Bankovní převod" {{ $invoiceSettings->payment_type == 'Bankovní převod' ? 'selected' : '' }}>
+									Bankovní převod
+								</option>
+								<option
+									value="Hotovost" {{ $invoiceSettings->payment_type == 'Hotovost' ? 'selected' : '' }}>
+									Hotovost
+								</option>
+								<option
+									value="Dobírka" {{ $invoiceSettings->payment_type == 'Dobírka' ? 'selected' : '' }}>
+									Dobírka
+								</option>
+							</select>
+						</div>
+						<div class="ml-md-4 mt-2">
+							<label for="specific_symbol">Specifický symbol: </label>
+							<input type="text" class="form-control  @error('specific_symbol') is-invalid @enderror" value="{{ old('specific_symbol') }}" id="specific_symbol" name="specificSymbol">
+							@error('specific_symbol')
+							<div class="invalid-feedback">
+								<strong>{{ $message }}</strong>
+							</div>
+							@enderror
+						</div>
+					</div>
+
 				</div>
 
 				<div class="col-sm-6 invoice-col">
-					<label for="contractor_city">Datum vystavení: </label>
-					<input type="date" class="form-control" id="issue_date" name="issue_date">
-					<label for="contractor_city">Datum splatnosti: </label>
-					<input type="date" class="form-control" id="due_date" name="due_date">
+					<div class="d-md-flex">
+						<div class="mt-2">
+							<label for="issue_date">Datum vystavení: </label>
+							<input type="date" class="form-control" id="issue_date" name="issue_date">
+						</div>
+						<div class="ml-md-4 mt-2">
+							<label for="due_date">Splatnost (dní): </label>
+							<input type="number" class="form-control @error('due_date') is-invalid @enderror" id="due_date" name="due_date"
+								   value="{{ $invoiceSettings->due_date ? $invoiceSettings->due_date : old('due_date') }}">
+							@error('due_date')
+							<div class="invalid-feedback">
+								<strong>{{ $message }}</strong>
+							</div>
+							@enderror
+						</div>
+					</div>
 				</div>
 			</div>
 			<br>
@@ -171,13 +185,14 @@
 						</thead>
 						<tbody id="invoice-items-root">
 						<tr>
-							<td><input type="text" name="items[0][name]"></td>
-							<td><input type="text" name="items[0][amount]"></td>
-							<td><input type="text" name="items[0][unit]"></td>
-							<td><input type="text" name="items[0][price]"></td>
+							<td><input type="text" name="items[0][name]" autocomplete="off"></td>
+							<td><input type="number" data-index="0" class="amount" name="items[0][amount]" autocomplete="off"></td>
+							<td><input type="text" name="items[0][unit]" autocomplete="off"></td>
+							<td><input type="number" data-index="0" class="price" name="items[0][price]" autocomplete="off"></td>
 							@if($user->tax_identification_number)
 								<td>
-									<select name="items[0][vat]" id="vat-exists" class="form-control select2 select2-hidden-accessible">
+									<select name="items[0][vat]" id="vat-exists"
+											class="form-control select2 select2-hidden-accessible">
 										<option value="21">21%</option>
 										<option value="15">15%</option>
 										<option value="10">10%</option>
@@ -188,59 +203,61 @@
 						</tr>
 						</tbody>
 					</table>
-					<button class="btn btn-secondary" id="add-invoice-item">Přidat položku</button>
-				</div>
-				<!-- /.col -->
-			</div>
-			<!-- /.row -->
-
-			<div class="row">
-
-				<!-- /.col -->
-				<div class="col-6">
-
-
-					<div class="table-responsive">
-						<table class="table">
-							<tr>
-								<th style="width:50%">Celkem bez DPH:</th>
-								<td>$250.30</td>
-							</tr>
-							<tr>
-								<th>Sazba DPH (21%)</th>
-								<td>$10.34</td>
-							</tr>
-							<tr>
-								<th>Základ daně:</th>
-								<td>$5.80</td>
-							</tr>
-							<tr>
-								<th>DPH:</th>
-								<td>$265.24</td>
-							</tr>
-							<tr>
-								<th>Celkem k úhradě:</th>
-								<td>$265.24</td>
-							</tr>
-						</table>
+					<div class="w-100 d-flex justify-content-end">
+						<button class="btn btn-secondary mb-3" id="add-invoice-item">Přidat položku<i
+								class="fa fa-plus pl-2"></i></button>
 					</div>
 				</div>
 				<!-- /.col -->
 			</div>
 			<!-- /.row -->
 
+{{--			<div class="row">--}}
+
+{{--				<!-- /.col -->--}}
+{{--				<div class="col-12">--}}
+{{--					<div class="table-responsive">--}}
+{{--						<table class="table">--}}
+{{--							<tr>--}}
+{{--								<th style="width:50%">Celkem bez DPH:</th>--}}
+{{--								<td id="price-without-vat">0,-</td>--}}
+{{--							</tr>--}}
+{{--							@if($user->tax_identification_number)--}}
+{{--								<tr>--}}
+{{--									<th>Sazba DPH (21%)</th>--}}
+{{--									<td>$10.34</td>--}}
+{{--								</tr>--}}
+{{--								<tr>--}}
+{{--									<th>DPH:</th>--}}
+{{--									<td>$265.24</td>--}}
+{{--								</tr>--}}
+{{--								<tr>--}}
+{{--									<th>Celkem k úhradě:</th>--}}
+{{--									<td>$265.24</td>--}}
+{{--								</tr>--}}
+{{--							@endif--}}
+{{--						</table>--}}
+{{--					</div>--}}
+{{--				</div>--}}
+{{--				<!-- /.col -->--}}
+{{--			</div>--}}
+{{--			<!-- /.row -->--}}
+
 			<div class="form-row">
 				<div class="form-group col-md-12">
 					<label for="note">Poznámka</label>
-					<textarea type="text" class="form-control" id="note" name="note"></textarea>
+					<textarea type="text" class="form-control @error('note') is-invalid @enderror" id="note" name="note"></textarea>
+					@error('note')
+					<div class="invalid-feedback">
+						<strong>{{ $message }}</strong>
+					</div>
+					@enderror
 				</div>
 			</div>
 
-			<div class="card-footer">
 				<button type="submit" class="btn btn-primary">Vytvořit fakturu</button>
-			</div>
-		</section>
-	</form>
+		</form>
+	</section>
 
 	<!-- /.content -->
 	<div class="clearfix"></div>

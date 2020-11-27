@@ -8,10 +8,10 @@ $('#add-invoice-item').click(e => {
 	if (document.getElementById('vat-exists')) {
 		invoiceItemsRoot.append(`
 		<tr>
-			<td><input type="text" name="items[${invoiceItemsCounter}][name]"></td>
-			<td><input type="number" name="items[${invoiceItemsCounter}][amount]"></td>
-			<td><input type="text" name="items[${invoiceItemsCounter}][unit]"></td>
-			<td><input type="number" name="items[${invoiceItemsCounter}][price]"></td>
+			<td><input type="text" name="items[${invoiceItemsCounter}][name]" autocomplete="off"></td>
+			<td><input type="number" class="amount" name="items[${invoiceItemsCounter}][amount]" autocomplete="off"></td>
+			<td><input type="text" name="items[${invoiceItemsCounter}][unit]" autocomplete="off"></td>
+			<td><input type="number" class="price" name="items[${invoiceItemsCounter}][price]" autocomplete="off"></td>
 			<td>
 				<select name="items[${invoiceItemsCounter}][vat]" class="form-control select2 select2-hidden-accessible">
 					<option value="21">21%</option>
@@ -27,10 +27,10 @@ $('#add-invoice-item').click(e => {
 	} else {
 		invoiceItemsRoot.append(`
 		<tr>
-			<td><input type="text" name="items[${invoiceItemsCounter}][name]"></td>
-			<td><input type="number" name="items[${invoiceItemsCounter}][amount]"></td>
-			<td><input type="text" name="items[${invoiceItemsCounter}][unit]"></td>
-			<td><input type="number" name="items[${invoiceItemsCounter}][price]"></td>
+			<td><input type="text" name="items[${invoiceItemsCounter}][name]" autocomplete="off"></td>
+			<td><input type="number" data-index="${invoiceItemsCounter}" class="amount" name="items[${invoiceItemsCounter}][amount]" autocomplete="off"></td>
+			<td><input type="text" name="items[${invoiceItemsCounter}][unit]" autocomplete="off"></td>
+			<td><input type="number" data-index="${invoiceItemsCounter}" class="price" name="items[${invoiceItemsCounter}][price]" autocomplete="off"></td>
 			<td>
 				<button class="btn btn-danger delete"><i class="fa fa-trash"></i></button>
 			</td>
@@ -46,6 +46,5 @@ $('#add-invoice-item').click(e => {
 
 
 $(document).on("click",'.delete', function () {
-	console.log(this)
 	$(this).closest('tr').remove();
 });

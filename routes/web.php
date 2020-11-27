@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
 
 		Route::post('/ares/{ico}', [App\Http\Controllers\AresController::class, 'fetchData']);
 		Route::post('/customer/{id}', [App\Http\Controllers\CustomerController::class, 'retrieveCustomer']);
+		Route::post('/invoice/{id}/pdf', [App\Http\Controllers\InvoicePdfController::class, 'getPdf']);
 
 	});
 });
@@ -29,17 +30,19 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
 	Route::prefix('/app')->group(function () {
 
-		Route::view('/dashboard', 'app.dashboard')->name('app.dashboard');
+		Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('app.dashboard');
 
 		Route::resource('/invoice', App\Http\Controllers\InvoiceController::class);
+		Route::post('/invoice/{invoice}/mark-as-paid', [App\Http\Controllers\InvoiceController::class, 'markInvoiceAsPaid'])->name('invoice.markAsPaid');
+		Route::post('/invoice/{invoice}/mark-as-unpaid', [App\Http\Controllers\InvoiceController::class, 'markInvoiceAsUnpaid'])->name('invoice.markAsUnpaid');
 		Route::resource('/customers', App\Http\Controllers\CustomerController::class);
 
 		Route::get('user', [App\Http\Controllers\UserController::class, 'edit'])->name('user.edit');
 		Route::patch('user', [App\Http\Controllers\UserController::class, 'update'])->name('user.update');
 
 
-		Route::get('invoicesettings', [App\Http\Controllers\InvoiceSettingsController::class, 'edit'])->name('app.invoiceSettings.edit');
-		Route::patch('invoicesettings', [App\Http\Controllers\InvoiceSettingsController::class, 'update'])->name('app.invoiceSettings.update');
+		Route::get('invoicesettings', [App\Http\Controllers\InvoiceSettingsController::class, 'edit'])->name('invoiceSettings.edit');
+		Route::patch('invoicesettings', [App\Http\Controllers\InvoiceSettingsController::class, 'update'])->name('invoiceSettings.update');
 
 	});
 });

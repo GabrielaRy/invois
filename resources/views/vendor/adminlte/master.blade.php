@@ -71,6 +71,14 @@
         <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
 
+	<style>
+		.form-group.required .control-label:after {
+			content:"*";
+			color:red;
+			padding-left: 5px;
+		}
+	</style>
+
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>

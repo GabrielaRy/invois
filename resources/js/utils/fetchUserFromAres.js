@@ -14,14 +14,23 @@ $('#fetch-user-from-ares').click((e) => {
 		return;
 	}
 
+	$('#fetch-user-from-ares')
+		.prepend('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>')
+		.attr('disabled', true);
+
 	fetchFromAres(identificationNumber.val()).then(({payload}) => {
 
-		$('#company_name').val(payload.company);
+		$('#contact_person_name').val(payload.company);
 		$('#tax_identification_number').val(payload.tin ? payload.tin : '');
 		$('#street').val(`${payload.street} ${payload.house_number}`);
 		$('#city').val(payload.city);
 		$('#postcode').val(payload.zip);
 		$('#country').val('Česká Republika');
+
+		$('#fetch-user-from-ares')
+			.attr('disabled', false)
+			.find('span:first')
+			.remove();
 
 		if ($('#ico-error')) {
 			$('#ico-error').remove()

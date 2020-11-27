@@ -9,6 +9,8 @@ class InvoiceSetting extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
 	/**
 	 * StoreInvoice setting belongs to User
 	 *

@@ -7,117 +7,80 @@
 
 @section('content')
 
-@if (session('success'))
-     <div class="alert alert-success">
-          {{ session('success') }}
-     </div>
-@endif
+	<form class="mt-4" action="{{ route('invoiceSettings.update') }}" method="POST" enctype="multipart/form-data">
+		@csrf
+		@method('patch')
 
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+		<h5 class="font-weight-bold" style="font-size: 1.4rem;">Soubory</h5>
+		<div class="form-row mt-3">
+			<div class="form-group required col-md-6">
+				<label class="control-label" for="logo">Logo</label>
+				<div class="custom-file">
+					<label class="custom-file-label" for="logo">Vyberte soubor</label>
+					<input type="file" class="custom-file-input" id="logo" name="logo">
+				</div>
+				@error('logo')
+				<div class="invalid-feedback">
+					<strong>{{ $message }}</strong>
+				</div>
+				@enderror
+			</div>
+			<div class="form-group required col-md-6">
+				<label class="control-label" for="signature">Razítko / Podpis</label>
+				<div class="custom-file">
+					<input type="file" class="custom-file-input" id="signature" name="signature">
+					<label class="custom-file-label" for="signature">Vyberte soubor</label>
+				</div>
+				@error('signature')
+				<div class="invalid-feedback">
+					<strong>{{ $message }}</strong>
+				</div>
+				@enderror
+			</div>
+		</div>
 
-<form role="form" action="{{ route('app.invoiceSettings.update') }}" method="POST">
-  @method('patch')
-  @csrf
-    <!-- add logo and signature-->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="logo">Logo</label>
-                <div class="input-group">
-                  <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="logo" name="logo">
-                    <label class="custom-file-label" for="logo">Vyber soubor</label>
-                  </div>
-                  <div class="input-group-append">
-                    <button class="input-group-text" id="" name="upload">Nahraj</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="signature">Razítko / podpis </label>
-                    <div class="input-group">
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="signature" name="signature">
-                        <label class="custom-file-label" for="signature">Najdi</label>
-                      </div>
-                      <div class="input-group-append">
-                        <button class="input-group-text" id="" name="upload" value="Upload">Nahraj</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+		<hr>
 
-    </div>
+		<h5 class="mt-2 font-weight-bold" style="font-size: 1.4rem;">Výchozí nastavení faktur</h5>
+		<div class="form-row mt-3">
+			<div class="form-group col-md-4">
+				<label for="constant_symbol">Konstantní symbol</label>
+				<input type="text" value="{{ $invoiceSetting->constant_symbol ?? '' }}"
+					   class="form-control @error('constant_symbol') is-invalid @enderror"
+					   id="constant_symbol" name="constant_symbol">
+				@error('constant_symbol')
+				<div class="invalid-feedback">
+					<strong>{{ $message }}</strong>
+				</div>
+				@enderror
+			</div>
+			<div class="form-group col-md-4">
+				<label for="payment_type">Typ platby</label>
+				<select class="form-control @error('payment_type') is-invalid @enderror" name="payment_type" id="payment_type">
+					<option value="Bankovní převod" {{ $invoiceSetting->payment_type == 'Bankovní převod' ? 'selected' : '' }}>Bankovní převod</option>
+					<option value="Hotovost" {{ $invoiceSetting->payment_type == 'Hotovost' ? 'selected' : '' }}>Hotovost</option>
+					<option value="Dobírka" {{ $invoiceSetting->payment_type == 'Dobírka' ? 'selected' : '' }}>Dobírka</option>
+				</select>
+				@error('payment_type')
+				<div class="invalid-feedback">
+					<strong>{{ $message }}</strong>
+				</div>
+				@enderror
+			</div>
+			<div class="form-group col-md-4">
+				<label for="due_date">Délka splatnosti</label>
+				<input type="text" value="{{ $invoiceSetting->due_date ?? '' }}"
+					   class="form-control @error('due_date') is-invalid @enderror"
+					   id="due_date" name="due_date">
+				@error('due_date')
+				<div class="invalid-feedback">
+					<strong>{{ $message }}</strong>
+				</div>
+				@enderror
+			</div>
+		</div>
 
-    <!-- primary informations of the invoice -->
-    <div class="card card-success">
-      <div class="card-header">
-        <h3 class="card-title">Výchozí údaje na faktuře</h3>
-      </div>
-      <!-- /.card-header -->
-
-      <!-- card body -->
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-
-                        <!-- Jako běžný plátce tak nesmíte používat tato čísla jako konstantní symbol: 5, 6, 51, 1178, 2178, 3178 -->
-                        <label for="konstatniS">Konstatní symbol</label>
-                        <input type="number" class="form-control" id="konstatniS" placeholder="Konstatní symbol" name="constant_symbol">
-                      </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="zpusobPlatby">Způsob platby</label>
-                            <select class="form-control" id="zpusobPlatby" placeholder="zpusobPlatby" name="payment_type">
-                              <option name="bank">Bankovní převod</option>
-                              <option name="cash">Hotovost</option>
-                              <option name="postpaid">Dobírka</option>
-                              <option name="prepaid">Záloha</option>
-                            </select>
-                      </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="splatnostF">Splatnost faktur (dnů)</label>
-                        <input type="number" class="form-control" id="splatnostF" placeholder="14" name="due_date">
-                      </div>
-                </div>
-            </div>
-
-
-
-          {{-- <div class="form-group">
-            <label>Text pod údaji dodavatele</label>
-            <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>Text nad položkami faktury</label>
-            <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>Text pod částkou za položky faktury</label>
-            <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
-          </div> --}}
-
-
-      </div>
-        <div class="card-footer">
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </div>
-    </div>
-  </form>
+		<button type="submit" class="btn btn-primary">Uložit nastavení faktur</button>
+	</form>
 
 @endsection

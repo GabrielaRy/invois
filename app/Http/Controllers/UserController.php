@@ -20,7 +20,6 @@ class UserController extends Controller
 
 	public function update(Request $request)
 	{
-
 		$request->validate([
 			'identification_number' => 'required|min:8',
 			'tax_identification_number' => 'nullable|string',
@@ -28,12 +27,12 @@ class UserController extends Controller
 			'city' => 'required|string',
 			'postcode' => 'required|string',
 			'country' => 'required|string',
-			'contact_person_name' => 'nullable|string',
+			'contact_person_name' => 'required|string',
 			'contact_person_phone' => 'nullable|string',
 			'contact_person_email' => 'nullable|string',
 			'contact_person_website' => 'nullable|string',
-
 		]);
+
 		$id = auth()->user()->id;
 
 		$user = User::findOrFail($id);

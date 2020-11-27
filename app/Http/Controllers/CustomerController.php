@@ -35,7 +35,7 @@ class CustomerController extends Controller
     public function update(Request $request, $id) {
         $request->validate([
             'name' => 'required',
-            'identification_number'  => 'required|min:8',
+            'identification_number'  => 'nullable|min:8',
             'tax_identification_number'  => 'nullable|string',
             'street'  => 'required|string',
             'city'  => 'required|string',
@@ -77,7 +77,7 @@ class CustomerController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'identification_number'  => 'required|min:8',
+            'identification_number'  => 'nullable|min:8',
             'tax_identification_number'  => 'nullable|string',
             'street'  => 'required|string',
             'city'  => 'required|string',
@@ -98,7 +98,7 @@ class CustomerController extends Controller
         $customer->user_id = $userId;
         $customer->name = $request->input('name');
         $customer->identification_number = $request->input('identification_number');
-        $customer->tax_identification_number = $request->input('taxIdentification_number');
+        $customer->tax_identification_number = $request->input('tax_identification_number');
         $customer->street = $request->input('street');
         $customer->city = $request->input('city');
         $customer->postcode = $request->input('postcode');
@@ -111,7 +111,7 @@ class CustomerController extends Controller
 
         $customer->save();
 
-        return redirect()->route('customers.index')->with('success', 'Nový zákazník byl uložen');
+        return redirect()->route('customers.index')->with('success', 'Nový zákazník byl vytvořen');
     }
 
     public function destroy($id) {
@@ -124,7 +124,9 @@ class CustomerController extends Controller
 	/**
 	 * Metoda pro načítání customera z AJAXU
 	 *
-	 * @param Customer $customer
+	 * @param Request $request
+	 * @param $id
+	 * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
 	 */
 	public function retrieveCustomer(Request $request, $id)
 	{

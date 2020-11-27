@@ -14,6 +14,10 @@ $('#fetch-customer-from-ares').click((e) => {
 		return;
 	}
 
+	$('#fetch-customer-from-ares')
+		.prepend('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>')
+		.attr('disabled', true);
+
 	fetchFromAres(identificationNumber.val()).then(({payload}) => {
 
 		$('#name').val(payload.company);
@@ -22,6 +26,11 @@ $('#fetch-customer-from-ares').click((e) => {
 		$('#city').val(payload.city);
 		$('#postcode').val(payload.zip);
 		$('#country').val('Česká Republika');
+
+		$('#fetch-customer-from-ares')
+			.attr('disabled', false)
+			.find('span:first')
+			.remove();
 
 		if ($('#ico-error')) {
 			$('#ico-error').remove()
