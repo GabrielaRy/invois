@@ -34,14 +34,18 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
-        $user = User::create([
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
-        ]);
+		$user = new User();
 
-        InvoiceSetting::create([
-        	'user_id' => $user->id
-		]);
+		$user->email = $input['email'];
+		$user->password = Hash::make($input['password']);
+
+		$user->save();
+
+		$invoiceSetting = new InvoiceSetting();
+
+		$invoiceSetting->user_id = $user->id;
+
+		$invoiceSetting->save();
 
         return $user;
     }
