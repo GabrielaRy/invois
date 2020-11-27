@@ -9,6 +9,8 @@ class InvoiceItem extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
 	/**
 	 * StoreInvoice item belongs to invoice
 	 *

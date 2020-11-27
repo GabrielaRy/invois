@@ -20,6 +20,7 @@ class CreateInvoiceItemsTable extends Migration
             $table->integer('amount')->unsigned();
             $table->string('unit', 50);
             $table->integer('price');
+            $table->smallInteger('vat');
             $table->integer('sum');
             $table->timestamps();
 

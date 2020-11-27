@@ -134,6 +134,68 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'name' => [
+            'required' => 'Pole je povinné'
+        ],
+        'identification_number' => [
+            'required' => 'Pole je povinné',
+            'min' => 'Min. délka 8',
+        ],
+
+        'street' => [
+            'required' => 'Pole je povinné',
+        ],
+        'city' => [
+            'required' => 'Pole je povinné',
+        ],
+        'postcode' => [
+            'required' => 'Pole je povinné',
+        ],
+        'country' => [
+            'required' => 'Pole je povinné',
+        ],
+        'payment_type' => [
+            'required' => 'Pole je povinné',
+        ],
+        'invoice_number'=> [
+            'required' => 'Pole je povinné',
+        ],
+        'issue_date' => [
+            'required' => 'Pole je povinné',
+        ],
+        'due_date' => [
+            'required' => 'Pole je povinné',
+        ],
+        'items.*.name' => [
+            'required' => 'Pole je povinné',
+        ],
+        'items.*.amount' => [
+            'integer' => 'Musí být číslo',
+            'required' => 'Pole je povinné',
+        ],
+        'items.*.price' => [
+            'required' => 'Pole je povinné',
+            'redex' => 'max. 2 desetinná místa'
+        ],
+        'items.*.price' => [
+            'required' => 'Pole je povinné'
+        ],
+        'constant_symbol' => [
+            'required' => 'Pole je povinné',
+            'min' => 'Min.délka 4'
+        ],
+        'payment_type' => [
+            'required' => 'Pole je povinné',
+        ],
+        'due_date' => [
+            'required' => 'Pole je povinné',
+            'max' => 'Doba splatnosti nesmí být delší než rok'
+        ],
+        'contact_person_name' => [
+            'required' => 'Pole je povinné',
+        ],
+
+    
     ],
 
     /*

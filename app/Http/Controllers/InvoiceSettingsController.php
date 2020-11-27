@@ -7,19 +7,19 @@ use Illuminate\Http\Request;
 
 class InvoiceSettingsController extends Controller
 {
-    /**
-     * Show edit form 
-     *
-     * @return \Illuminate\Http\Response
-     */
+	/**
+	 * Show edit form
+	 *
+	 * @param Request $request
+	 * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+	 */
     public function edit(Request $request)
     {
         $userId =  auth()->user()->id;
 
-        $invoiceSetting = InvoiceSetting::where('user_id', $userId);
+        $invoiceSetting = InvoiceSetting::where('user_id', $userId)->first();
 
         return view('app.invoiceSetting.edit', compact('invoiceSetting')) ;
-
     }
 
 
@@ -27,23 +27,21 @@ class InvoiceSettingsController extends Controller
      * Update invoice settings
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+     * @return \Illuminate\Http\RedirectResponse
+	 */
     public function update(Request $request)
-    {    
+    {
         $userId =  auth()->user()->id;
 
         $request->validate([
-            // 'logo' => 'image:jpeg,jpg,png,gif,svg,pdf',
-            // 'signature' => 'image:jpeg,jpg,png,gif,svg,pdf',
-            'constant_symbol' => 'required|min:4',
-            'payment_type'  => 'required|in:Bankovní převod,Hotovost,Dobírka,Záloha',
-            'due_date'  => 'required|max:365',
-
+        	'logo' => 'nullable|image:jpeg,jpg,png,gif,svg,pdf',
+			'signature' => 'nullable|image:jpeg,jpg,png,gif,svg,pdf',
+            'constant_symbol' => 'nullable|string|max:10',
+            'payment_type'  => 'nullable|in:Bankovní převod,Hotovost,Dobírka',
+            'due_date'  => 'nullable|numeric|between:1,365',
         ]);
 
-
-        $invoiceSetting = new InvoiceSetting;
+        $invoiceSetting = InvoiceSetting::where('user_id', $userId)->first();
 
         $invoiceSetting->user_id = $userId;
         $invoiceSetting->logo = $request->input('logo');
@@ -54,7 +52,7 @@ class InvoiceSettingsController extends Controller
 
         $invoiceSetting->save();
 
-        return redirect()->route('app.invoiceSettings.edit')->with('success', 'Nastavení faktur bylo úspěšně změněno');
+        return redirect()->route('invoiceSettings.edit')->with('success', 'Nastavení faktur bylo úspěšně změněno');
 }
 
 }

@@ -27,6 +27,7 @@ class InvoiceItemFactory extends Factory
 			'amount' => $this->faker->numberBetween(1, 20),
 			'unit' => 'ks',
             'price' => $this->faker->numberBetween(100, 20000),
+			'vat' => $this->faker->numberBetween(0, 21),
             'sum' => $this->faker->randomNumber(3)
 		];
     }

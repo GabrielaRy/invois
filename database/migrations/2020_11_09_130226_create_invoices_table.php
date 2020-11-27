@@ -29,7 +29,7 @@ class CreateInvoicesTable extends Migration
 			$table->string('contractor_country', 255);
 
 			$table->string('customer_name', 255);
-			$table->string('customer_identification_number', 50);
+			$table->string('customer_identification_number', 50)->nullable();
 			$table->string('customer_tax_identification_number', 50)->nullable();
 			$table->string('customer_street', 255);
 			$table->string('customer_city', 255);
@@ -52,7 +52,7 @@ class CreateInvoicesTable extends Migration
 
             $table->text('note')->nullable();
 
-            $table->integer('total_sum');
+            $table->bigInteger('total_sum');
 
             $table->timestamps();
 
