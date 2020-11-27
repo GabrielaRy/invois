@@ -17,8 +17,8 @@ class CreateCustomersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('name', 255);
-            $table->string('identification_number', 50);
-            $table->string('tax_identification_number', 50);
+            $table->string('identification_number', 50)->nullable();
+            $table->string('tax_identification_number', 50)->nullable();
             $table->string('street', 255);
             $table->string('city', 255);
             $table->string('postcode', 50);

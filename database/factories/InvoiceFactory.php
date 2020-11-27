@@ -28,6 +28,8 @@ class InvoiceFactory extends Factory
 			'user_id' => 1,
 			'file' => '/' . implode('/', $this->faker->words($this->faker->numberBetween(0, 4))) . '/' . $this->faker->word . '.' . $this->faker->lexify('???'),
 
+			'invoice_number' => date('Y') . '-' . $this->faker->randomNumber(4),
+
 			'contractor_name' => $this->faker->name,
 			'contractor_identification_number' => $identificationNumber,
 			'contractor_tax_identification_number' => 'CZ' . $identificationNumber,
@@ -51,6 +53,8 @@ class InvoiceFactory extends Factory
 			'constant_symbol' => $this->faker->randomNumber(9),
 			'specific_symbol' => $this->faker->randomNumber(9),
 			'payment_type' => 'bankovní převod',
+
+			'total_sum' => $this->faker->randomNumber(5),
 
 			'issue_date' => now(),
 			'due_date' => now()->addDays($paymentTime),

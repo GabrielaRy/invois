@@ -18,6 +18,8 @@ class CreateInvoicesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('file', 255)->nullable();
 
+            $table->string('invoice_number', 20);
+
 			$table->string('contractor_name', 255);
 			$table->string('contractor_identification_number', 50);
 			$table->string('contractor_tax_identification_number', 50);
@@ -27,8 +29,8 @@ class CreateInvoicesTable extends Migration
 			$table->string('contractor_country', 255);
 
 			$table->string('customer_name', 255);
-			$table->string('customer_identification_number', 50);
-			$table->string('customer_tax_identification_number', 50);
+			$table->string('customer_identification_number', 50)->nullable();
+			$table->string('customer_tax_identification_number', 50)->nullable();
 			$table->string('customer_street', 255);
 			$table->string('customer_city', 255);
 			$table->string('customer_postcode', 50);
@@ -38,15 +40,19 @@ class CreateInvoicesTable extends Migration
 			$table->string('bank_account_iban', 255)->nullable();
 			$table->string('bank_account_swift', 255)->nullable();
 
-			$table->string('variable_symbol', 50);
-			$table->string('constant_symbol', 50);
-			$table->string('specific_symbol', 50);
+			$table->string('variable_symbol', 50)->nullable();
+			$table->string('constant_symbol', 50)->nullable();
+			$table->string('specific_symbol', 50)->nullable();
 			$table->string('payment_type', 50);
 
 			$table->date('issue_date');
-			$table->date('due_date');
+            $table->date('due_date');
 
-			$table->text('note')->nullable();
+            $table->date('is_paid')->nullable();
+
+            $table->text('note')->nullable();
+
+            $table->bigInteger('total_sum');
 
             $table->timestamps();
 

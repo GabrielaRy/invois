@@ -9,8 +9,10 @@ class InvoiceItem extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
 	/**
-	 * Invoice item belongs to invoice
+	 * StoreInvoice item belongs to invoice
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */

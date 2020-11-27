@@ -9,8 +9,10 @@ class InvoiceSetting extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
 	/**
-	 * Invoice setting belongs to User
+	 * StoreInvoice setting belongs to User
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
