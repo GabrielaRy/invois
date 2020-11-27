@@ -7,7 +7,10 @@
 
 @section('action_header')
 	<div class="d-flex mt-2">
-		<a href="" class="btn btn-dark ml-2 m-2"><i class="fas fa-print"></i></a>
+		<form action="/api/invoice/{{ $invoice->id }}/pdf" class="ml-2 mt-2" method="POST">
+			@csrf
+			<button type="submit" class="btn btn-dark"><i class="fas fa-print"></i></button>
+		</form>
 
 		<form class="ml-2 mt-2 delete-row" action="{{ route('invoice.destroy', $invoice->id) }}"
 			  method="POST">

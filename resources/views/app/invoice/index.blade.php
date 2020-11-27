@@ -82,22 +82,30 @@
 											<form class="ml-2" action="{{ route('invoice.markAsPaid', $invoice->id) }}"
 												  method="POST">
 												@csrf
-												<button type="submit" class="btn btn-success" title="Označit jako zaplacenou">
+												<button type="submit" class="btn btn-success"
+														title="Označit jako zaplacenou">
 													<i class="fa fa-money-bill"></i>
 												</button>
 											</form>
 										@else
-											<form class="ml-2" action="{{ route('invoice.markAsUnpaid', $invoice->id) }}"
+											<form class="ml-2"
+												  action="{{ route('invoice.markAsUnpaid', $invoice->id) }}"
 												  method="POST">
 												@csrf
-												<button type="submit" class="btn btn-danger" title="Označit jako nezaplacenou">
+												<button type="submit" class="btn btn-danger"
+														title="Označit jako nezaplacenou">
 													<i class="fa fa-money-bill"></i>
 												</button>
 											</form>
 
 										@endif
 
-										<a href="" class="btn btn-dark ml-2"><i class="fas fa-print"></i></a>
+										<form action="/api/invoice/{{ $invoice->id }}/pdf" class="ml-2"
+											  method="POST">
+											@csrf
+											<button type="submit" class="btn btn-dark"><i class="fas fa-print"></i>
+											</button>
+										</form>
 
 										<a class="btn btn-primary ml-2" id="mark-as-paid"
 										   href="{{ route('invoice.edit', $invoice->id) }}"
