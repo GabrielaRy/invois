@@ -16,14 +16,17 @@
     @endif>
 
     {{-- Small brand logo --}}
-    <img src="{{ asset(config('adminlte.logo_img', 'vendor/adminlte/dist/img/AdminLTELogo.png')) }}"
-         alt="{{ config('adminlte.logo_img_alt', 'AdminLTE') }}"
-         class="{{ config('adminlte.logo_img_class', 'brand-image img-circle elevation-3') }}"
+    <img src="{{ asset('img/invoices.svg') }}"
+         alt="billing machine icon"
+         class="billingIcon"
          style="opacity:.8">
 
     {{-- Brand text --}}
-    <span class="brand-text font-weight-light {{ config('adminlte.classes_brand_text') }}">
+    {{-- <span class="brand-text font-weight-light {{ config('adminlte.classes_brand_text') }}">
         {!! config('adminlte.logo', '<b>Admin</b>LTE') !!}
-    </span>
+    </span> --}}
+    <img src="{{ asset('img/invoisB.svg') }}"
+         alt="invois logo"
+         class="invoisLogo">
 
 </a>

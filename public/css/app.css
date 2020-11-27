@@ -1,0 +1,61 @@
+.tst {
+background-color: #2176FF;
+}
+
+[class*=sidebar-dark] .brand-link {
+    background-color: #fff;
+    color: #31393C;
+    border-bottom: 1px solid #31393C;
+}
+
+.brand-link {
+    display: block;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    padding: .5rem .5rem;
+    transition: width .3s ease-in-out;
+    white-space: nowrap;
+}
+
+.nav-header {
+    color: #fff;
+}
+
+[class*=sidebar-dark-] .sidebar a {
+    color: #fff;
+}
+
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link {
+    color: #fff;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #31393C;
+}
+
+[class*=sidebar-dark-] .nav-header {
+    background: inherit;
+    color: #fff;
+}
+
+/* alerts */
+
+.alert-warning {
+    background-color: #FDCA40 !important;
+    color: #31393C;
+    border: 1px solid #FDCA40;
+}
+
+/* logo style */
+
+.invoisLogo {
+    width: 130px; /* width of container */
+    height: auto; /* height of container */
+    overflow: hidden;
+    margin-left: 1rem;
+}
+
+.billingIcon {
+    height: 40px;
+    margin-left: 0.5em;
+}
